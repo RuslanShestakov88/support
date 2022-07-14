@@ -1,0 +1,8 @@
+# Editirs
+.vscode/
+
+# Python stuff
+__pycache__/
+
+#Sqlite
+*.sqlite3
