@@ -28,6 +28,8 @@ class ExchangeRate:
             "to": self.to,
             "value": self.value,
         }
+    def __eq__(self, other: ExchangeRate)-> bool:
+        return self.value == other.value
 
 
 #NOTE: Global variable to store exchange rates histiry
@@ -36,6 +38,10 @@ ExchangeRates = list[ExchangeRate]
 ALL_EXCHANGE_RATES: ExchangeRates = []
 HISTORY: dict[str, ExchangeRates] = {"results": ALL_EXCHANGE_RATES}
 
+def history_as_json():
+    return{
+        "results": [element.as_dict() for element in HISTORY["results"]]
+    }
 
 def btc_usd(request):
     API_KEY = "82I46WMYT3C7EX3J"
