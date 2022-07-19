@@ -1,20 +1,27 @@
 from __future__ import annotations
-
+from typing import List
+from dataclasses import dataclass, asdict
+from matplotlib.font_manager import json_dump
 import requests
 from django.http import JsonResponse
+import os. path, json
+
+PREFIX = "./config.logs/"
+LOG_FILE = PREFIX + "history.json"
+
 
 def home(request):
     data = {"message": "hello from json response", "num": 12.2}
     return JsonResponse(data)
 
+@dataclass
 class ExchangeRate:
-    def __init__(self, from_: str, to: str, value: float) -> None:
-        self.from_: str = from_
-        self.to: str = to
-        self.value: float = value
+    from_: str
+    to: str
+    value: float
     
     @classmethod
-    def from_response(cls, response: requests.Response):
+    def from_response(cls, response: requests.Response) -> ExchangeRate:
         pure_resopnse: dict = response.json()["Realtime Currency Exchange Rate"]
         from_ = pure_resopnse["1. From_Currency Code"]
         to = pure_resopnse["3. To_Currency Code"]
@@ -22,26 +29,36 @@ class ExchangeRate:
         
         return cls(from_ = from_, to = to, value=value)
 
-    def as_dict(self) -> dict:
-        return {
-            "frrom": self.from_,
-            "to": self.to,
-            "value": self.value,
-        }
     def __eq__(self, other: ExchangeRate)-> bool:
         return self.value == other.value
 
+ExchangeRates = List[ExchangeRate]
 
-#NOTE: Global variable to store exchange rates histiry
-ExchangeRates = list[ExchangeRate]
+class ExchangeRatesHistory:
+    _history: ExchangeRates = []
+    
+    @classmethod
+    def add(cls, instance: ExchangeRate) -> None:
+        if not cls._history:
+            cls._history.append(instance)
+        elif cls._history[-1] != instance:
+            cls._history.append(instance)
 
-ALL_EXCHANGE_RATES: ExchangeRates = []
-HISTORY: dict[str, ExchangeRates] = {"results": ALL_EXCHANGE_RATES}
+    @classmethod
+    def as_dict(cls) -> dict:
+        return {
+            "results": [asdict(er) for er in cls._history]
+        }
+    # trying to write
+    @classmethod
+    def write(cls, instance: ExchangeRate) -> None:
+        with open(LOG_FILE, 'w') as outfile:
+            json.dump(instance, outfile)
+            outfile.write(instance)
+            
+    
 
-def history_as_json():
-    return{
-        "results": [element.as_dict() for element in HISTORY["results"]]
-    }
+
 
 def btc_usd(request):
     API_KEY = "82I46WMYT3C7EX3J"
@@ -49,14 +66,10 @@ def btc_usd(request):
     response = requests.get(url)
     
     exchange_rate = ExchangeRate.from_response(response)
-        
-    if len(ALL_EXCHANGE_RATES) == 0:
-        ALL_EXCHANGE_RATES.append(exchange_rate)
-    elif exchange_rate != ALL_EXCHANGE_RATES[-1]:
-        ALL_EXCHANGE_RATES.append(exchange_rate)
+    ExchangeRatesHistory.add(exchange_rate)    
     
-    return JsonResponse(exchange_rate.as_dict())
+    return JsonResponse(asdict(exchange_rate))
 
 def history (request):
-    return JsonResponse(HISTORY)
+    return JsonResponse(ExchangeRatesHistory.as_dict())
 
