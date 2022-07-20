@@ -1,14 +1,13 @@
 from __future__ import annotations
 from typing import List
 from dataclasses import dataclass, asdict
-from matplotlib.font_manager import json_dump
 import requests
 from django.http import JsonResponse
-import os. path, json
+import json, os
 
 PREFIX = "./config.logs/"
-LOG_FILE = PREFIX + "history.json"
-
+#LOG_FILE = PREFIX + "history.json"
+LOG_FILE = "history.json"
 
 def home(request):
     data = {"message": "hello from json response", "num": 12.2}
@@ -36,7 +35,8 @@ ExchangeRates = List[ExchangeRate]
 
 class ExchangeRatesHistory:
     _history: ExchangeRates = []
-    
+    fiel_for_w: str = os.path.join(PREFIX, LOG_FILE)
+
     @classmethod
     def add(cls, instance: ExchangeRate) -> None:
         if not cls._history:
@@ -51,10 +51,17 @@ class ExchangeRatesHistory:
         }
     # trying to write
     @classmethod
-    def write(cls, instance: ExchangeRate) -> None:
-        with open(LOG_FILE, 'w') as outfile:
+    def write(cls, instance: dict) -> None:
+        with open('LOG_FILE', 'w') as outfile:
             json.dump(instance, outfile)
-            outfile.write(instance)
+            #outfile.write(instance)
+
+    #read form file
+    @classmethod
+    def read(cls):
+        with open('LOG_FILE', 'r') as outfile:
+            return json.load(outfile)
+            
             
     
 
