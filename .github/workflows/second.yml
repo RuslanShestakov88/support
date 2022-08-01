@@ -14,7 +14,7 @@ jobs:
           python-version: '3.8.10'
           cache: 'pipenv'
       - name: Install deps
-        run: pipenv install -dev Pipfile
+        run: pipenv install --deploy --dev
       - name: Run linter
         run: flake8 ./
       - name: Run formatters
