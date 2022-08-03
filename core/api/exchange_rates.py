@@ -26,7 +26,9 @@ class ExchangeRate:
 
     @classmethod
     def from_response(cls, response: requests.Response) -> ExchangeRate:
-        pure_resopnse: dict = response.json()["Realtime Currency Exchange Rate"]  # noqa E501
+        pure_resopnse: dict = response.json()[
+            "Realtime Currency Exchange Rate"
+        ]  # noqa E501
         from_ = pure_resopnse["1. From_Currency Code"]
         to = pure_resopnse["3. To_Currency Code"]
         value = pure_resopnse["5. Exchange Rate"]

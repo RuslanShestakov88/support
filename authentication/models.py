@@ -1,11 +1,10 @@
 from tabnanny import verbose  # noqa: 401
 from typing import Optional
+
+from django.contrib.auth.models import AbstractBaseUser  # noqa: E501
+from django.contrib.auth.models import PermissionsMixin, UserManager
 from django.db import models
-from django.contrib.auth.models import (
-    AbstractBaseUser,
-    PermissionsMixin,
-    UserManager,
-)  # noqa: E501
+
 from shared.django import TimeStampMixin
 
 
