@@ -1,3 +1,4 @@
+from pickle import TRUE
 from tabnanny import verbose  # noqa: 401
 from typing import Optional
 
@@ -6,6 +7,11 @@ from django.contrib.auth.models import PermissionsMixin, UserManager
 from django.db import models
 
 from shared.django import TimeStampMixin
+
+DEFAUL_ROLES = {
+    "admin": 1,
+    "user": 2,
+}
 
 
 class CustomUserManager(UserManager):
@@ -24,25 +30,25 @@ class CustomUserManager(UserManager):
 
         return user
 
-    def create_superuser(
-        self,
-        email: str,
-        username: Optional[str] = None,
-        password: Optional[str] = None,
-        **kwargs
-    ):
-        superuser_payload: dict = {
+    def create_superuser(self, email: str, username: Optional[str] = None, password: Optional[str] = None, **kwargs):
+        payload1: dict = {
             "is_superuser": True,
             "is_active": True,
             "is_staff": True,
+            "role_id": DEFAUL_ROLES["admin"]
         }
-        return self.create_user(email, username, password, **superuser_payload)
+        payload = {**kwargs, **payload1}
+
+        return self.create_user(email, username, password, **payload)
 
 
 class Role(TimeStampMixin):
     """ "Users role. Use fro giving permissions"""
 
     name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
 
 
 class User(AbstractBaseUser, PermissionsMixin, TimeStampMixin):
@@ -59,7 +65,9 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStampMixin):
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
 
-    # role = models.ForeignKey(null=True, default=)
+    role = models.ForeignKey(
+        "Role", null=TRUE, default=DEFAUL_ROLES["user"], on_delete=models.SET_NULL, related_name="users",
+        )
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
