@@ -30,12 +30,18 @@ class CustomUserManager(UserManager):
 
         return user
 
-    def create_superuser(self, email: str, username: Optional[str] = None, password: Optional[str] = None, **kwargs):
+    def create_superuser(
+        self,
+        email: str,
+        username: Optional[str] = None,
+        password: Optional[str] = None,
+        **kwargs
+    ):
         payload1: dict = {
             "is_superuser": True,
             "is_active": True,
             "is_staff": True,
-            "role_id": DEFAUL_ROLES["admin"]
+            "role_id": DEFAUL_ROLES["admin"],
         }
         payload = {**kwargs, **payload1}
 
@@ -66,8 +72,12 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStampMixin):
     is_superuser = models.BooleanField(default=False)
 
     role = models.ForeignKey(
-        "Role", null=TRUE, default=DEFAUL_ROLES["user"], on_delete=models.SET_NULL, related_name="users",
-        )
+        "Role",
+        null=TRUE,
+        default=DEFAUL_ROLES["user"],
+        on_delete=models.SET_NULL,
+        related_name="users",
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

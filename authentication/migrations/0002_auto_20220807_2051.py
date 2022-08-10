@@ -13,7 +13,7 @@ def autopopulate_roles(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('authentication', '0001_initial'),
+        ("authentication", "0001_initial"),
     ]
 
     operations = [migrations.RunPython(autopopulate_roles)]
