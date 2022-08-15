@@ -1,16 +1,16 @@
 from django.contrib.auth import get_user_model
-from rest_framework.response import Response
-from core.models import Ticket
 from rest_framework import serializers
 from rest_framework.decorators import api_view
-from authentication.models import Role
+from rest_framework.response import Response
 
+from authentication.models import Role
+from core.models import Ticket
 
 User = get_user_model()
 
 
 def user_as_dict(user: User) -> dict:
-    return{
+    return {
         "username": user.username,
         "email": user.email,
         "phone": user.phone,
@@ -25,7 +25,6 @@ def ticket_as_dict(ticket: Ticket) -> dict:
         "id": ticket.id,
         "theme": ticket.theme,
         "discription": ticket.description,
-        
         "resolved": ticket.resolved,
         "created_at": ticket.created_at,
         "updated_at": ticket.updated_at,
@@ -35,24 +34,40 @@ def ticket_as_dict(ticket: Ticket) -> dict:
 class RoleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Role
-        fields = "__all__"
+        fields = ["id"]
 
 
 class UserSerializer(serializers.ModelSerializer):
     role = RoleSerializer()
-    
+
     class Meta:
         model = User
-        fields = "__all__"
+        fields = [
+            "id",
+            "role",
+            "email",
+            "username",
+            "first_name",
+            "last_name",
+            "age",
+            "phone",
+        ]
 
 
 class TicketSerializer(serializers.ModelSerializer):
     operator = UserSerializer()
     client = UserSerializer()
-    
+
     class Meta:
         model = Ticket
-        fields = "__all__"
+        fields = [
+            "id",
+            "operator",
+            "client",
+            "theme",
+            "description",
+            "resolved",
+        ]
 
 
 @api_view(["GET"])
