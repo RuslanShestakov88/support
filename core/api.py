@@ -52,6 +52,7 @@ class UserSerializer(serializers.ModelSerializer):
             "age",
             "phone",
         ]
+        # exclude = ["fields you want to hide"]
 
 
 class TicketSerializer(serializers.ModelSerializer):
@@ -70,8 +71,40 @@ class TicketSerializer(serializers.ModelSerializer):
         ]
 
 
+#class RoleLightSerializer(serializers.ModelSerializer):
+#    class Meta:
+#        model = User
+#        fields = ["id", "username", "role"]
+#
+#
+#class UserLightSerializer(serializers.ModelSerializer):
+#    role = RoleLightSerializer()
+#
+#    class Meta:
+#        model = User
+#        fields = ["id", "username", "email", "role"]
+
+
+class TicketLightSerializer(serializers.ModelSerializer):
+    #operator = UserLightSerializer()
+    #client = UserLightSerializer()
+
+    class Meta:
+        model = Ticket
+        fields = ["id", "theme", "resolved", "operator", "client"]
+
+
 @api_view(["GET"])
-def get_all_tickets(requst):
+def get_all_tickets(request):
     tickets = Ticket.objects.all()
-    data = TicketSerializer(tickets, many=True).data
+    data = TicketLightSerializer(tickets, many=True).data
     return Response(data=data)
+
+
+@api_view(["GET"])
+def get_ticket(request, id_: int):
+    tickets = Ticket.objects.get(id=id_)
+    data = TicketSerializer(tickets).data
+    return Response(data=data)
+
+
