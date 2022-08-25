@@ -6,4 +6,3 @@ urlpatterns = [
     path("", get_post_tickets),
     path("<int:id_>/", retrieve_update_delete_ticket),
 ]
-

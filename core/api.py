@@ -15,10 +15,10 @@ def get_post_tickets(request):
     else:
         serializer = TicketSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        
+
         instance = serializer.create(serializer.validated_data)
         results = TicketSerializer(instance).data
-        
+
         return Response(data=results, status=status.HTTP_201_CREATED)
 
 
@@ -32,14 +32,12 @@ def retrieve_update_delete_ticket(request, id_: int):
     elif request.method == "PUT":
         serializer = TicketSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        
+
         instance = serializer.update(choisen_ticket, serializer.validated_data)
         results = TicketSerializer(instance).data
-        
+
         return Response(data=results)
 
     elif request.method == "DELETE":
         choisen_ticket.delete()
         return Response("ticket всё")
-
- 

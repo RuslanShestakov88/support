@@ -1,7 +1,8 @@
-from authentication.models import Role
-from core.models import Ticket
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
+
+from authentication.models import Role
+from core.models import Ticket
 
 User = get_user_model()
 
