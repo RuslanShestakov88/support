@@ -32,7 +32,7 @@ Installed packs:
 
 > core:
 >- some prodject models
->- api - basic logig
+>- api - basic logic
 >- serializers for project models 
 
 > Exchange_rates:
