@@ -102,7 +102,7 @@ class TicketLightSerializer(serializers.ModelSerializer):
     # operator = UserLightSerializer()
     # client = UserLightSerializer()
     permission_classes = (IsAuthenticatedOrReadOnly,)
-    
+
     class Meta:
         model = Ticket
         fields = ["id", "theme", "resolved", "operator", "client"]
