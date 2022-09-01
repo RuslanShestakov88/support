@@ -61,6 +61,26 @@ class TicketSerializer(serializers.ModelSerializer):
         model = Ticket
         fields = "__all__"
 
+    def validate(self, attrs: dict) -> dict:
+        theme = attrs.get("theme")
+        if not theme:
+            return attrs
+        
+        try:
+            Ticket.objects.get(theme=theme)
+        except Ticket.DoesNotExist:
+            return attrs
+        
+        raise ValueError("This ticket is allready in database")
+
+        # data = Ticket.objects.values_list("theme")
+        # data = Ticket.objects.values("theme")
+        # data = Ticket.objects.only("theme")
+        # for element in chain.fron_iterable(data):
+        #     if element == theme:
+        #         raise ValueError("This ticket is allready in database")
+        
+        # return attrs
 
 # class RoleLightSerializer(serializers.ModelSerializer):
 #    class Meta:
