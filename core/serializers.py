@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
-
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from authentication.models import Role
 from core.models import Ticket
 
@@ -56,6 +56,7 @@ class UserSerializer(serializers.ModelSerializer):
 class TicketSerializer(serializers.ModelSerializer):
     operator = UserSerializer(read_only=True)
     client = UserSerializer(read_only=True)
+    permission_classes = (IsAuthenticatedOrReadOnly,)
 
     class Meta:
         model = Ticket
@@ -100,7 +101,8 @@ class TicketSerializer(serializers.ModelSerializer):
 class TicketLightSerializer(serializers.ModelSerializer):
     # operator = UserLightSerializer()
     # client = UserLightSerializer()
-
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+    
     class Meta:
         model = Ticket
         fields = ["id", "theme", "resolved", "operator", "client"]
