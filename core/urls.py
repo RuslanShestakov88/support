@@ -1,8 +1,10 @@
 from django.urls import path
 
-from core.api import get_post_tickets, retrieve_update_delete_ticket
+from core.api import TicketsCreateAPI, TicketsListAPI, TicketRetrieveAPI
+
 
 urlpatterns = [
-    path("", get_post_tickets),
-    path("<int:id_>/", retrieve_update_delete_ticket),
+    path("", TicketsListAPI.as_view()),
+    path("create/", TicketsCreateAPI.as_view()),
+    path("<int:id>/", TicketRetrieveAPI.as_view()),
 ]
