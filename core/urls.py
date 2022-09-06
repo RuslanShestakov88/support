@@ -1,7 +1,6 @@
 from django.urls import path
 
-from core.api import TicketsCreateAPI, TicketsListAPI, TicketRetrieveAPI
-
+from core.api import TicketRetrieveAPI, TicketsCreateAPI, TicketsListAPI
 
 urlpatterns = [
     path("", TicketsListAPI.as_view()),

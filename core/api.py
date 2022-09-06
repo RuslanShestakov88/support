@@ -1,10 +1,11 @@
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
+# from rest_framework.decorators import api_view
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 
 from core.models import Ticket
-from core.serializers import TicketSerializer, TicketLightSerializer
+from core.serializers import TicketLightSerializer, TicketSerializer
+
+# from rest_framework.response import Response
 
 
 # class TicketsListCreateApi(ListCreateAPIView):
