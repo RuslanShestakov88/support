@@ -1,4 +1,6 @@
 # from rest_framework.decorators import api_view
+from requests import Response
+from rest_framework import status
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 
@@ -33,6 +35,30 @@ class TicketsCreateAPI(CreateAPIView):
     permission_classes = [IsAuthenticated]
 
 
+class TicketRetrieveAPI(RetrieveAPIView):
+    queryset = Ticket.objects.all()
+    serializer_class = TicketSerializer
+    lookup_field = "id"
+    lookup_url_kwarg = "id"
+
+
+class TicketCreateandListAPIView(ListAPIView, CreateAPIView):
+    # permission_classes = [IsAuthenticated]
+    serializer_class = TicketLightSerializer
+
+    def get_queryset(self):
+        return Ticket.objects.all()
+
+    def post(self, request):
+        serializer = TicketSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# @permissions_classes
 # @api_view(["GET", "POST"])
 # def get_post_tickets(request):
 #     if request.method == "GET":
@@ -47,13 +73,6 @@ class TicketsCreateAPI(CreateAPIView):
 #         results = TicketSerializer(instance).data
 
 #         return Response(data=results, status=status.HTTP_201_CREATED)
-
-
-class TicketRetrieveAPI(RetrieveAPIView):
-    queryset = Ticket.objects.all()
-    serializer_class = TicketSerializer
-    lookup_field = "id"
-    lookup_url_kwarg = "id"
 
 
 # @api_view(["GET", "PUT", "DELETE"])
