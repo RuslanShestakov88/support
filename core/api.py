@@ -4,10 +4,9 @@ from rest_framework import status
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 
+from core.admpermission import AdminForbiden
 from core.models import Ticket
 from core.serializers import TicketLightSerializer, TicketSerializer
-from core.admpermission import AdminForbiden
-from authentication.models import DEFAUL_ROLES
 
 # from rest_framework.response import Response
 

@@ -1,4 +1,5 @@
 from itertools import chain
+
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
@@ -66,7 +67,7 @@ class TicketSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs: dict) -> dict:
         theme = attrs.get("theme")
-        
+
         if not theme:
             return attrs
 
@@ -78,12 +79,12 @@ class TicketSerializer(serializers.ModelSerializer):
         # raise ValueError("This ticket is allready in database")
         # data = Ticket.objects.only("theme")
         data = Ticket.objects.values_list("theme")
-        
+
         for element in chain.from_iterable(data):
             if element == theme:
                 raise ValueError("This ticket is allready in database")
 
-        attrs["client"] = self.context["request"].user        
+        attrs["client"] = self.context["request"].user
         return attrs
 
 
