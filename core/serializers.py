@@ -1,3 +1,4 @@
+from itertools import chain
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
@@ -65,24 +66,25 @@ class TicketSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs: dict) -> dict:
         theme = attrs.get("theme")
+        
         if not theme:
             return attrs
 
-        try:
-            Ticket.objects.get(theme=theme)
-        except Ticket.DoesNotExist:
-            return attrs
+        # try:
+        #     Ticket.objects.get(theme=theme)
+        # except Ticket.DoesNotExist:
+        #     return attrs
 
-        raise ValueError("This ticket is allready in database")
-
-        # data = Ticket.objects.values_list("theme")
-        # data = Ticket.objects.values("theme")
+        # raise ValueError("This ticket is allready in database")
         # data = Ticket.objects.only("theme")
-        # for element in chain.fron_iterable(data):
-        #     if element == theme:
-        #         raise ValueError("This ticket is allready in database")
+        data = Ticket.objects.values_list("theme")
+        
+        for element in chain.from_iterable(data):
+            if element == theme:
+                raise ValueError("This ticket is allready in database")
 
-        # return attrs
+        attrs["client"] = self.context["request"].user        
+        return attrs
 
 
 # class RoleLightSerializer(serializers.ModelSerializer):
