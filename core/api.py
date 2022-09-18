@@ -19,7 +19,7 @@ class TicketsListAPI(ListAPIView):
 
 
 class TicketsCreateAPI(CreateAPIView):
-    permission_classes = (AdminForbiden,)
+    permission_classes = (AdminForbiden, IsAuthenticated)
     serializer_class = TicketSerializer
     queryset = Ticket.objects.all()
 
