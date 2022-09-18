@@ -4,7 +4,7 @@ from rest_framework import permissions
 
 class AdminForbiden(permissions.BasePermission):
     def has_permission(self, request, view):
-        if request.user.is_staff and request.method == "POST":
+        if request.user.role_id == "admin" and request.method == "POST":
             raise ValidationError(
                 {"message": ("only regular user may post the ticket")}
             )
