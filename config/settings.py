@@ -186,7 +186,7 @@ SIMPLE_JWT = {
 }
 
 DJOSER = {
-    "SET_CREATE_PASSWORD_RETYPE": True,
+    "SET_PASSWORD_RETYPE": True,
 }
 
 # DJOSER = {
