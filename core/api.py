@@ -1,13 +1,14 @@
 # from rest_framework.decorators import api_view
 from requests import Response
 from rest_framework import status
-from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView, UpdateAPIView
 from rest_framework.permissions import IsAuthenticated
-
+from core.permissions import OperatorOnly
 from core.admpermission import AdminForbiden
 from core.models import Ticket
-from core.serializers import TicketLightSerializer, TicketSerializer
-
+from core.serializers import TicketLightSerializer, TicketSerializer, TicketAssignSerializer
+from authentication.models import DEFAUL_ROLES
+from django.db.models import Q
 # from rest_framework.response import Response
 
 
@@ -15,7 +16,12 @@ class TicketsListAPI(ListAPIView):
     serializer_class = TicketLightSerializer
 
     def get_queryset(self):
-        return Ticket.objects.filter(client=self.request.user)
+        user = self.request.user
+
+        if user.role.id == DEFAUL_ROLES["admin"]:
+            return Ticket.objects.filter(Q(operator=None) | Q(operator=user))
+
+        return Ticket.objects.filter(client=user)
 
 
 class TicketsCreateAPI(CreateAPIView):
@@ -25,11 +31,33 @@ class TicketsCreateAPI(CreateAPIView):
 
 
 class TicketRetrieveAPI(RetrieveAPIView):
+    serializer_class = TicketSerializer
     lookup_field = "id"
     lookup_url_kwarg = "id"
 
     def get_queryset(self):
-        return Ticket.objects.filter(client=self.request.user)
+        user = self.request.user
+        if user.role.id == DEFAUL_ROLES["user"]:
+            return Ticket.objects.filter(client=user)
+        return Ticket.objects.filter(operator=user)
+
+
+class TicketAssighAPI(UpdateAPIView):
+    http_method_names = ["patch"]
+    serializer_class = TicketAssignSerializer
+    permission_classes = [OperatorOnly]
+    lookup_field = "id"
+    lookup_url_kwarg = "id"
+
+    def get_queryset(self):
+        return Ticket.objects.filter(operator=None)
+
+      
+
+
+
+
+
 
 
 class TicketCreateandListAPIView(ListAPIView, CreateAPIView):  # create and list in one

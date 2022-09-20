@@ -88,6 +88,26 @@ class TicketSerializer(serializers.ModelSerializer):
         return attrs
 
 
+class TicketLightSerializer(serializers.ModelSerializer):
+    # operator = UserLightSerializer()
+    # client = UserLightSerializer()
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
+    class Meta:
+        model = Ticket
+        fields = ["id", "theme", "resolved", "operator", "client"]
+
+
+class TicketAssignSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ticket
+        fields = ["operator"]
+
+    def validate(self, attrs: dict) -> dict:
+        # NOTE: Add current user to the 'attrs' object
+        attrs["operator"] = self.context["request"].user
+        return attrs
+
 # class RoleLightSerializer(serializers.ModelSerializer):
 #    class Meta:
 #        model = User
@@ -100,13 +120,3 @@ class TicketSerializer(serializers.ModelSerializer):
 #    class Meta:
 #        model = User
 #        fields = ["id", "username", "email", "role"]
-
-
-class TicketLightSerializer(serializers.ModelSerializer):
-    # operator = UserLightSerializer()
-    # client = UserLightSerializer()
-    permission_classes = (IsAuthenticatedOrReadOnly,)
-
-    class Meta:
-        model = Ticket
-        fields = ["id", "theme", "resolved", "operator", "client"]
