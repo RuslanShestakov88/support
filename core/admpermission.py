@@ -1,6 +1,6 @@
-
 from django.core.exceptions import ValidationError
 from rest_framework import permissions
+
 from authentication.models import DEFAUL_ROLES
 
 
@@ -10,5 +10,5 @@ class AdminForbiden(permissions.BasePermission):
             raise ValidationError(
                 {"message": ("only regular user may post the ticket")}
             )
-        else: 
+        else:
             return True

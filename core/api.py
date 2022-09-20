@@ -1,14 +1,18 @@
 # from rest_framework.decorators import api_view
+from django.db.models import Q
 from requests import Response
 from rest_framework import status
-from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView, UpdateAPIView
+from rest_framework.generics import (CreateAPIView, ListAPIView,
+                                     RetrieveAPIView, UpdateAPIView)
 from rest_framework.permissions import IsAuthenticated
-from core.permissions import OperatorOnly
+
+from authentication.models import DEFAUL_ROLES
 from core.admpermission import AdminForbiden
 from core.models import Ticket
-from core.serializers import TicketLightSerializer, TicketSerializer, TicketAssignSerializer
-from authentication.models import DEFAUL_ROLES
-from django.db.models import Q
+from core.permissions import OperatorOnly
+from core.serializers import (TicketAssignSerializer, TicketLightSerializer,
+                              TicketSerializer)
+
 # from rest_framework.response import Response
 
 
@@ -51,13 +55,6 @@ class TicketAssighAPI(UpdateAPIView):
 
     def get_queryset(self):
         return Ticket.objects.filter(operator=None)
-
-      
-
-
-
-
-
 
 
 class TicketCreateandListAPIView(ListAPIView, CreateAPIView):  # create and list in one

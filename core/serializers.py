@@ -108,6 +108,7 @@ class TicketAssignSerializer(serializers.ModelSerializer):
         attrs["operator"] = self.context["request"].user
         return attrs
 
+
 # class RoleLightSerializer(serializers.ModelSerializer):
 #    class Meta:
 #        model = User
