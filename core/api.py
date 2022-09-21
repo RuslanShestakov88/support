@@ -22,10 +22,30 @@ class TicketsListAPI(ListAPIView):
     def get_queryset(self):
         user = self.request.user
 
+        empty = self.request.GET.get("empty")
+        empty_zn = False
+
+        if empty is not None:
+            if user.role.id != DEFAUL_ROLES["admin"]:
+                raise ValueError("Only Admin can use empty")
+            elif empty == "true":
+                empty_zn = True
+            elif empty == "false":
+                empty_zn = False
+            else:
+                raise ValueError("lowercase needed")
         if user.role.id == DEFAUL_ROLES["admin"]:
-            return Ticket.objects.filter(Q(operator=None) | Q(operator=user))
+            if empty_zn is True:
+                return Ticket.objects.filter(operator=None)
+            else:
+                return Ticket.objects.filter(Q(operator=None) | Q(operator=user))
 
         return Ticket.objects.filter(client=user)
+
+        # if user.role.id == DEFAUL_ROLES["admin"]:
+        #   return Ticket.objects.filter(Q(operator=None) | Q(operator=user))
+
+        # return Ticket.objects.filter(client=user)
 
 
 class TicketsCreateAPI(CreateAPIView):
