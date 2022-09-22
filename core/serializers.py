@@ -109,6 +109,17 @@ class TicketAssignSerializer(serializers.ModelSerializer):
         return attrs
 
 
+class TicketResolveSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ticket
+        fields = ["resolve"]
+
+    def validate(self, attrs: dict) -> dict:
+        # NOTE: Add current user to the 'attrs' object
+        attrs["operator"] = self.context["request"].user
+        return attrs
+
+
 # class RoleLightSerializer(serializers.ModelSerializer):
 #    class Meta:
 #        model = User
