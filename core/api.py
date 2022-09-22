@@ -2,16 +2,23 @@
 from django.db.models import Q
 from requests import Response
 from rest_framework import status
-from rest_framework.generics import (CreateAPIView, ListAPIView,
-                                     RetrieveAPIView, UpdateAPIView)
+from rest_framework.generics import (
+    CreateAPIView,
+    ListAPIView,
+    RetrieveAPIView,
+    UpdateAPIView,
+)
 from rest_framework.permissions import IsAuthenticated
 
 from authentication.models import DEFAUL_ROLES
 from core.admpermission import AdminForbiden
 from core.models import Ticket
 from core.permissions import OperatorOnly
-from core.serializers import (TicketAssignSerializer, TicketLightSerializer,
-                              TicketSerializer)
+from core.serializers import (
+    TicketAssignSerializer,
+    TicketLightSerializer,
+    TicketSerializer,
+)
 
 # from rest_framework.response import Response
 
